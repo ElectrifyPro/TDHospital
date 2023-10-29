@@ -8,7 +8,7 @@ from tensorflow.keras import layers
 
 
 def data_preprocessing(df, death=False):
-    col_to_keep = ['reflex', 'sex', 'blood', 'bloodchem1', 'bloodchem2', 'temperature', 'heart', 'psych1', 'glucose', 'psych2', 'dose', 'bloodchem3', 'confidence', 'bloodchem4', 'comorbidity', 'breathing', 'age']
+    col_to_keep = ['timeknown', 'reflex', 'sex', 'blood', 'bloodchem1', 'bloodchem2', 'temperature', 'heart', 'psych1', 'glucose', 'psych2', 'dose', 'bloodchem3', 'confidence', 'bloodchem4', 'comorbidity', 'breathing', 'age']
     if death:
         col_to_keep = ['death'] + col_to_keep
 
