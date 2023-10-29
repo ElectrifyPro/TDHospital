@@ -21,8 +21,8 @@ class Solution:
         """
         This function should return your final prediction!
         """
-        labels = ['reflex', 'blood', 'bloodchem1', 'bloodchem2', 'temperature', 'heart', 'psych1', 'glucose', 'psych2', 'dose', 'bloodchem3', 'confidence', 'bloodchem4', 'comorbidity', 'breathing', 'age']
-        values = [float(x) for x in [blood, reflex, bloodchem1, bloodchem2, temperature, heart, psych1, glucose, psych2, dose, bloodchem3, confidence, bloodchem4, comorbidity, breathing, age]]
+        labels = ['reflex', 'sex', 'blood', 'bloodchem1', 'bloodchem2', 'temperature', 'heart', 'psych1', 'glucose', 'psych2', 'dose', 'bloodchem3', 'confidence', 'bloodchem4', 'comorbidity', 'breathing', 'age']
+        values = [float(x) for x in [reflex, sex, blood, bloodchem1, bloodchem2, temperature, heart, psych1, glucose, psych2, dose, bloodchem3, confidence, bloodchem4, comorbidity, breathing, age]]
         df = dict()
         for label, value in zip(labels, values):
             df[label] = [value]
