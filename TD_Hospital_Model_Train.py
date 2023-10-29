@@ -1,23 +1,43 @@
 import numpy as np
 import pandas as pd
 import tensorflow as tf
+from scipy import stats
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
 from tensorflow import keras
 from tensorflow.keras import layers
 
+# Function to skip over cells with empty or ambiguous data
 
-def data_preprocessing(df, death=False):
-    col_to_keep = ['timeknown', 'sex', 'blood', 'comorbidity']
-    if death:
-        col_to_keep = ['death'] + col_to_keep
-
+def data_preprocessing(df):
+    col_to_keep = ['timeknown', 'death', 'psych2', 'age']
     df = df[col_to_keep]
+    df.shape
 
-    df.replace('', 0, inplace=True)
+    # AGE PROCESSING
+    df['age'] = df['age'].apply(lambda x: np.nan if x > 120 else x)
+
+    columns_to_process = ['timeknown', 'death', 'psych2', 'age']
+    for col in columns_to_process:
+        # Calculate mean and standard deviation for the current column
+        col_mean = df[col].mean()
+        col_std = df[col].std()
+
+        # Define the lower and upper thresholds for outliers
+        lower_threshold = col_mean - 3 * col_std
+        upper_threshold = col_mean + 3 * col_std
+
+        # Replace values outside the threshold with NaN
+        df[col] = df[col].apply(lambda x: col_mean if x < lower_threshold or x > upper_threshold else x)
+
+
+    df.replace('', 'nan', inplace=True)
     df.fillna(0, inplace=True)
+    # delete rows with 1 sex
+    # df = df.loc[df['sex'] != 1]
+    # df.shape
 
-    df['sex'] = df['sex'].apply(lambda value: 1 if value.lower()[0] == 'm' else 0)
+    # df['sex'] = df['sex'].apply(lambda value: 1 if value.lower()[0] == 'm' else 0)
     return df.apply(lambda x: pd.to_numeric(x, errors='coerce'))
     
 def split_feature_label(df):
@@ -86,7 +106,7 @@ if __name__ == "__main__":
     print("Original data:")
     print(df)
 
-    cleaned_data = data_preprocessing(df, True)
+    cleaned_data = data_preprocessing(df)
     print("Cleaned data:")
     print(cleaned_data)
     y, X = split_feature_label(cleaned_data)
