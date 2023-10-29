@@ -4,6 +4,8 @@ import tensorflow as tf
 import pandas as pd
 import random
 
+from TD_Hospital_Model_Train import data_preprocessing
+
 app = Flask(__name__)
 
 
@@ -21,14 +23,13 @@ class Solution:
         """
         This function should return your final prediction!
         """
-        labels = ['reflex', 'sex', 'blood', 'bloodchem1', 'bloodchem2', 'temperature', 'heart', 'psych1', 'glucose', 'psych2', 'dose', 'bloodchem3', 'confidence', 'bloodchem4', 'comorbidity', 'breathing', 'age']
-        values = [float(x) for x in [reflex, sex, blood, bloodchem1, bloodchem2, temperature, heart, psych1, glucose, psych2, dose, bloodchem3, confidence, bloodchem4, comorbidity, breathing, age]]
+        labels = ['timeknown', 'sex', 'blood', 'comorbidity']
+        values = [timeknown, sex, blood, comorbidity]
         df = dict()
         for label, value in zip(labels, values):
             df[label] = [value]
-        df = pd.DataFrame(df)
-        df.replace('', 0, inplace=True)
-        df.fillna(0, inplace=True)
+        df = data_preprocessing(pd.DataFrame(df))
+        print(df)
         prediction = self.model.predict(df.to_numpy())
         return float(prediction[0][0])
 
@@ -38,6 +39,7 @@ class Solution:
 def q1():
     solution = Solution()
     data = request.get_json()
+    print(data)
     return {
         "probability": solution.calculate_death_prob(data['timeknown'], data['cost'], data['reflex'], data['sex'], data['blood'],
                                             data['bloodchem1'], data['bloodchem2'], data['temperature'], data['race'],

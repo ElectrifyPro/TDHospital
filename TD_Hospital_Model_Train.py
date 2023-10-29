@@ -7,15 +7,18 @@ from tensorflow import keras
 from tensorflow.keras import layers
 
 
-def data_preprocessing(df):
-    col_to_keep = ['death', 'reflex', 'sex', 'blood', 'bloodchem1', 'bloodchem2', 'temperature', 'heart', 'psych1', 'glucose', 'psych2', 'dose', 'bloodchem3', 'confidence', 'bloodchem4', 'comorbidity', 'breathing', 'age']
+def data_preprocessing(df, death=False):
+    col_to_keep = ['timeknown', 'sex', 'blood', 'comorbidity']
+    if death:
+        col_to_keep = ['death'] + col_to_keep
+
     df = df[col_to_keep]
 
     df.replace('', 0, inplace=True)
     df.fillna(0, inplace=True)
 
     df['sex'] = df['sex'].apply(lambda value: 1 if value.lower()[0] == 'm' else 0)
-    return df
+    return df.apply(lambda x: pd.to_numeric(x, errors='coerce'))
     
 def split_feature_label(df):
     y = df['death']
@@ -45,8 +48,6 @@ def train_model(X, y):
     # Define the neural network model
     model = keras.Sequential([
         layers.Input(shape=(X_train.shape[1],)),  # Input layer
-        layers.Dense(1024, activation='relu'),     # Hidden layer with 1024 neurons and ReLU activation
-        layers.Dense(512, activation='relu'),     # Hidden layer with 512 neurons and ReLU activation
         layers.Dense(256, activation='relu'),     # Hidden layer with 256 neurons and ReLU activation
         layers.Dense(128, activation='relu'),     # Hidden layer with 128 neurons and ReLU activation
         layers.Dense(64, activation='relu'),      # Another hidden layer with 64 neurons and ReLU activation
@@ -85,7 +86,7 @@ if __name__ == "__main__":
     print("Original data:")
     print(df)
 
-    cleaned_data = data_preprocessing(df)
+    cleaned_data = data_preprocessing(df, True)
     print("Cleaned data:")
     print(cleaned_data)
     y, X = split_feature_label(cleaned_data)
