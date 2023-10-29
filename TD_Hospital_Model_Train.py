@@ -18,7 +18,7 @@ def data_preprocessing(df, death=False):
     df.shape
 
     # AGE PROCESSING
-    df['age'] = df['age'].apply(lambda x: np.nan if x > 120 else x)
+    df['age'] = df['age'].apply(lambda x: np.nan if float(x) > 120 else x)
 
     columns_to_process = ['timeknown', 'age', 'psych2', 'information']
     for col in columns_to_process:
