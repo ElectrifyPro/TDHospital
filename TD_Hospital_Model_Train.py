@@ -20,7 +20,7 @@ def data_preprocessing(df, death=False):
     # AGE PROCESSING
     df['age'] = df['age'].apply(lambda x: np.nan if x > 120 else x)
 
-    columns_to_process = ['timeknown', 'age', 'psch2', 'information']
+    columns_to_process = ['timeknown', 'age', 'psych2', 'information']
     for col in columns_to_process:
         # Calculate mean and standard deviation for the current column
         col_mean = df[col].mean()
