@@ -23,8 +23,10 @@ class Solution:
         """
         This function should return your final prediction!
         """
-        labels = ['timeknown', 'sex', 'blood', 'comorbidity']
-        values = [timeknown, sex, blood, comorbidity]
+
+
+        labels = ['timeknown', 'age', 'psych2', 'information']
+        values = [timeknown, age, psych2, information]
         df = dict()
         for label, value in zip(labels, values):
             df[label] = [value]

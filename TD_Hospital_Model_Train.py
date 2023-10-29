@@ -10,14 +10,14 @@ from tensorflow.keras import layers
 # Function to skip over cells with empty or ambiguous data
 
 def data_preprocessing(df):
-    col_to_keep = ['timeknown', 'death', 'psych2', 'age']
+    col_to_keep = ['timeknown', 'death', 'age', 'psych2', 'information']
     df = df[col_to_keep]
     df.shape
 
     # AGE PROCESSING
     df['age'] = df['age'].apply(lambda x: np.nan if x > 120 else x)
 
-    columns_to_process = ['timeknown', 'death', 'psych2', 'age']
+    columns_to_process = ['timeknown', 'death', 'age', 'psych2', 'information']
     for col in columns_to_process:
         # Calculate mean and standard deviation for the current column
         col_mean = df[col].mean()
@@ -31,11 +31,8 @@ def data_preprocessing(df):
         df[col] = df[col].apply(lambda x: col_mean if x < lower_threshold or x > upper_threshold else x)
 
 
-    df.replace('', 'nan', inplace=True)
+    df.replace('', 0, inplace=True)
     df.fillna(0, inplace=True)
-    # delete rows with 1 sex
-    # df = df.loc[df['sex'] != 1]
-    # df.shape
 
     # df['sex'] = df['sex'].apply(lambda value: 1 if value.lower()[0] == 'm' else 0)
     return df.apply(lambda x: pd.to_numeric(x, errors='coerce'))
@@ -67,7 +64,8 @@ def train_model(X, y):
 
     # Define the neural network model
     model = keras.Sequential([
-        layers.Input(shape=(X_train.shape[1],)),  # Input layer
+        layers.Input(shape=(X_train.shape[1],)),  # Input layerlayers.Dense(1024, activation='relu'),     # Hidden layer with 256 neurons and ReLU activation
+        layers.Dense(512, activation='relu'),     # Hidden layer with 256 neurons and ReLU activation
         layers.Dense(256, activation='relu'),     # Hidden layer with 256 neurons and ReLU activation
         layers.Dense(128, activation='relu'),     # Hidden layer with 128 neurons and ReLU activation
         layers.Dense(64, activation='relu'),      # Another hidden layer with 64 neurons and ReLU activation
@@ -101,7 +99,7 @@ def train_model(X, y):
 
 
 if __name__ == "__main__":
-    data_path = './TD_HOSPITAL_TRAIN.csv'
+    data_path = './TD_HOSPITAL_TRAIN_modified.csv'
     df = pd.read_csv(data_path)
     print("Original data:")
     print(df)
