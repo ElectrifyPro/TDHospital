@@ -9,15 +9,18 @@ from tensorflow.keras import layers
 
 # Function to skip over cells with empty or ambiguous data
 
-def data_preprocessing(df):
-    col_to_keep = ['timeknown', 'death', 'age', 'psych2', 'information']
+def data_preprocessing(df, death=False):
+    col_to_keep = ['timeknown', 'age', 'psych2', 'information']
+    if death:
+        col_to_keep = ['death'] + col_to_keep
+
     df = df[col_to_keep]
     df.shape
 
     # AGE PROCESSING
     df['age'] = df['age'].apply(lambda x: np.nan if x > 120 else x)
 
-    columns_to_process = ['timeknown', 'death', 'age', 'psych2', 'information']
+    columns_to_process = ['timeknown', 'age', 'psch2', 'information']
     for col in columns_to_process:
         # Calculate mean and standard deviation for the current column
         col_mean = df[col].mean()
@@ -104,7 +107,7 @@ if __name__ == "__main__":
     print("Original data:")
     print(df)
 
-    cleaned_data = data_preprocessing(df)
+    cleaned_data = data_preprocessing(df, death=True)
     print("Cleaned data:")
     print(cleaned_data)
     y, X = split_feature_label(cleaned_data)
